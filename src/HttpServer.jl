@@ -474,6 +474,8 @@ function __init__()
     global const on_headers_complete_cb = cfunction(on_headers_complete, HTTP_CB...)
     global const on_body_cb = cfunction(on_body, HTTP_DATA_CB...)
     global const on_message_complete_cb = cfunction(on_message_complete, HTTP_CB...)
+    global const on_chunk_header_cb = cfunction(on_chunk_header, HTTP_CB...)
+    global const on_chunk_complete_cb = cfunction(on_chunk_complete, HTTP_CB...)
 end
 
 end # module HttpServer

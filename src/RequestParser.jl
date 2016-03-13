@@ -105,7 +105,13 @@ function on_message_complete(parser)
     return 0
 end
 
+function on_chunk_header(parser)
+    return 0
+end
 
+function on_chunk_complete(parser)
+    return 0
+end
 
 default_complete_cb(r::Request) = nothing
 
@@ -133,7 +139,8 @@ immutable ClientParser
         settings = ParserSettings(on_message_begin_cb, on_url_cb,
                                   on_status_complete_cb, on_header_field_cb,
                                   on_header_value_cb, on_headers_complete_cb,
-                                  on_body_cb, on_message_complete_cb)
+                                  on_body_cb, on_message_complete_cb,
+                                  on_chunk_header_cb, on_chunk_complete_cb)
 
         new(parser, settings)
     end

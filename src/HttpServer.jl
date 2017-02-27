@@ -57,7 +57,7 @@ or a full `Response` instance:
 
 ```
 handler = HttpHandler() do req, res
-  Response(200, "Success", "Hello World!"
+  Response(200, "Success", "Hello World!")
 end
 ```
 

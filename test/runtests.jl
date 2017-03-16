@@ -136,4 +136,18 @@ facts("HttpServer runs") do
         @fact text(ret) --> "hello"
         close(server)
     end
+
+    # Issue #111
+    context("Parse HTTP headers") do
+          http = HttpHandler() do req::Request, res::Response
+              Response(req.headers["Content-Type"])
+          end
+          server = Server(http)
+          @async run(server, 8000)
+          sleep(1.0)
+
+          ret = Requests.post("http://localhost:8000/", data = "√", headers = Dict("Content-Type" => "text/plain"))
+          @fact text(ret) --> "text/plain"
+          close(server)
+    end
 end

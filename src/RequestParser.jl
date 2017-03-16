@@ -51,11 +51,11 @@ function on_header_field(parser, at, len)
     par = pd(parser)
     if par.num_fields == par.num_values
         par.num_fields += 1
-        push!(par.fields_, "")
+        push!(par.vec_fields, "")
     end
     header = unsafe_string(convert(Ptr{UInt8}, at))
     header_field = header[1:len]
-    par.fields_[par.num_fields] = string(par.fields_[par.num_fields], header_field)
+    par.vec_fields[par.num_fields] = string(par.vec_fields[par.num_fields], header_field)
     return 0
 end
 
@@ -63,22 +63,22 @@ function on_header_value(parser, at, len)
     par = pd(parser)
     if par.num_values != par.num_fields
         par.num_values += 1
-        push!(par.values_, "")
+        push!(par.vec_values, "")
     end
     s = unsafe_string(convert(Ptr{UInt8}, at), Int(len))
     header_value = s[1:len]
-    par.values_[par.num_values] = string(par.values_[par.num_values], header_value)
+    par.vec_values[par.num_values] = string(par.vec_values[par.num_values], header_value)
     return 0
 end
 
 function on_headers_complete(parser)
     par = pd(parser)
     r = par.request
-    merge!(r.headers, Dict(zip(par.fields_, par.values_)))
+    merge!(r.headers, Dict(zip(par.vec_fields, par.vec_values)))
     par.num_fields = 0
     par.num_values = 0
-    empty!(par.fields_)
-    empty!(par.values_)
+    empty!(par.vec_fields)
+    empty!(par.vec_values)
     p = unsafe_load(parser)
     # get first two bits of p.type_and_flags
     ptype = p.type_and_flags & 0x03
@@ -123,8 +123,8 @@ type RequestParserState
     complete_cb::Function
     num_fields::Int
     num_values::Int
-    fields_::Vector{String}
-    values_::Vector{String}
+    vec_fields::Vector{String}
+    vec_values::Vector{String}
 end
 RequestParserState() = RequestParserState(Request(),default_complete_cb,0,0,Vector{String}(),Vector{String}())
 

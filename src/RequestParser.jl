@@ -48,24 +48,37 @@ end
 # this: https://github.com/joyent/node/blob/master/src/node_http_parser.cc#L207
 
 function on_header_field(parser, at, len)
-    r = pd(parser).request
+    par = pd(parser)
+    if par.num_fields == par.num_values
+        par.num_fields += 1
+        push!(par.vec_fields, "")
+    end
     header = unsafe_string(convert(Ptr{UInt8}, at))
     header_field = header[1:len]
-    r.headers["current_header"] = header_field
+    par.vec_fields[par.num_fields] = string(par.vec_fields[par.num_fields], header_field)
     return 0
 end
 
 function on_header_value(parser, at, len)
-    r = pd(parser).request
+    par = pd(parser)
+    if par.num_values != par.num_fields
+        par.num_values += 1
+        push!(par.vec_values, "")
+    end
     s = unsafe_string(convert(Ptr{UInt8}, at), Int(len))
-    r.headers[r.headers["current_header"]] = s
-    r.headers["current_header"] = ""
-    # delete!(r.headers, "current_header")
+    header_value = s[1:len]
+    par.vec_values[par.num_values] = string(par.vec_values[par.num_values], header_value)
     return 0
 end
 
 function on_headers_complete(parser)
-    r = pd(parser).request
+    par = pd(parser)
+    r = par.request
+    merge!(r.headers, Dict(zip(par.vec_fields, par.vec_values)))
+    par.num_fields = 0
+    par.num_values = 0
+    empty!(par.vec_fields)
+    empty!(par.vec_values)
     p = unsafe_load(parser)
     # get first two bits of p.type_and_flags
     ptype = p.type_and_flags & 0x03
@@ -93,10 +106,6 @@ function on_message_complete(parser)
     r = state.request
     # r.data = takebuf_array(state.data)
 
-    # delete the temporary header key
-    # delete!(r.headers, "current_header")
-    pop!(r.headers, "current_header", nothing)
-
     # Get the `parser.id` from the C pointer `parser`.
     # Retrieve our callback function from the global Dict.
     # Call it with the completed `Request`
@@ -112,8 +121,12 @@ default_complete_cb(r::Request) = nothing
 type RequestParserState
     request::Request
     complete_cb::Function
+    num_fields::Int
+    num_values::Int
+    vec_fields::Vector{String}
+    vec_values::Vector{String}
 end
-RequestParserState() = RequestParserState(Request(),default_complete_cb)
+RequestParserState() = RequestParserState(Request(),default_complete_cb,0,0,Vector{String}(),Vector{String}())
 
 pd(p::Ptr{Parser}) = (unsafe_load(p).data)::RequestParserState
 

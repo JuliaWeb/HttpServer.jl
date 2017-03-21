@@ -121,7 +121,7 @@ The methods `is_websocket_handshake` and `handle` will be called if `Server.
 sockets` is populated. Concrete types of `WebSocketInterface` are required
 to define these methods.
 """
-abstract WebSocketInterface
+@compat abstract type WebSocketInterface end
 
 """ `is_websocket_handshake` should determine if `req` is a valid websocket
 upgrade request.

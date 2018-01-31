@@ -5,6 +5,8 @@
 
 [![HttpServer](http://pkg.julialang.org/badges/HttpServer_0.3.svg)](http://pkg.julialang.org/?pkg=HttpServer&ver=0.3)
 [![HttpServer](http://pkg.julialang.org/badges/HttpServer_0.4.svg)](http://pkg.julialang.org/?pkg=HttpServer&ver=0.4)
+[![HttpServer](http://pkg.julialang.org/badges/HttpServer_0.5.svg)](http://pkg.julialang.org/?pkg=HttpServer&ver=0.5)
+[![HttpServer](http://pkg.julialang.org/badges/HttpServer_0.6.svg)](http://pkg.julialang.org/?pkg=HttpServer&ver=0.6)
 
 This is a basic, non-blocking HTTP server in Julia.
 

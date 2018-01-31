@@ -118,7 +118,7 @@ end
 
 default_complete_cb(r::Request) = nothing
 
-type RequestParserState
+mutable struct RequestParserState
     request::Request
     complete_cb::Function
     num_fields::Int
@@ -133,7 +133,7 @@ pd(p::Ptr{Parser}) = (unsafe_load(p).data)::RequestParserState
 # `ClientParser` wraps our `HttpParser`
 # Constructed with `on_message_complete` function.
 #
-immutable ClientParser
+struct ClientParser
     parser::Parser
     settings::ParserSettings
 

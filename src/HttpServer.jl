@@ -90,7 +90,7 @@ handler.events["foo"] = (bar) "Hello \$bar"
 HttpServer.event(server, "foo", "Julia")
 ```
 """
-immutable HttpHandler
+struct HttpHandler
     handle::Function
     sock::Base.TCPServer
     events::Dict
@@ -106,14 +106,14 @@ handle(handler::HttpHandler, req::Request, res::Response) = handler.handle(req, 
  the connection socket. `Client.parser` will store a `ClientParser` to handle
  all HTTP parsing for the connection lifecycle.
 """
-type Client{T<:IO}
+mutable struct Client{T<:IO}
     id::Int
     sock::T
     parser::ClientParser
 
     Client(id::Int,sock::T) = new(id,sock)
 end
-Client{T<:IO}(id::Int,sock::T) = Client{T}(id,sock)
+Client(id::Int,sock::T) where {T <: IO} = Client{T}(id,sock)
 
 """ `WebSocketInterface` defines the abstract protocol for a WebSocketHandler.
 
@@ -147,7 +147,7 @@ end
 * Instantiate with just a `WebSocketInterface` to only serve websockets
   requests and `404` all others.
 """
-immutable Server
+struct Server
     http::HttpHandler
     websock::Union{Void, WebSocketInterface}
 end

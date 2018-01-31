@@ -7,7 +7,7 @@ facts("HttpServer utility functions:") do
         response = Response(200, "Hello World!")
         buf = IOBuffer();
         HttpServer.write(buf, response)
-        response_string = takebuf_string(buf)
+        response_string = String(take!(buf))
         vals = split(response_string, "\r\n")
         grep(a::Array, k::AbstractString) = filter(x -> ismatch(Regex(k), x), a)[1]
         @fact grep(vals, "HTTP") --> "HTTP/1.1 200 OK "

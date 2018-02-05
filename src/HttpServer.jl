@@ -111,7 +111,7 @@ mutable struct Client{T<:IO}
     sock::T
     parser::ClientParser
 
-    Client(id::Int,sock::T) = new(id,sock)
+    Client{T}(id::Int,sock::T) where {T} = new(id,sock)
 end
 Client(id::Int,sock::T) where {T <: IO} = Client{T}(id,sock)
 

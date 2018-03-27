@@ -14,7 +14,7 @@ You can write a basic application using just this if you're happy dealing with v
 For a higher-level view, you could use [Mux](https://github.com/one-more-minute/Mux.jl).
 If you'd like to use WebSockets as well, you'll need to grab [WebSockets.jl](https://github.com/JuliaWeb/WebSockets.jl).
 
-##Installation
+## Installation
 Use Julia package manager to install this package as follows:
 ```
 Pkg.add("HttpServer")

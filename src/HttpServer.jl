@@ -24,6 +24,14 @@ export HttpHandler,
 
 import Base: run, listen, close
 
+if VERSION > v"0.7-"
+  using Sockets
+  using Sockets: TCPServer
+else
+  using Base: TCPServer
+end
+
+
 defaultevents = Dict{String, Function}()
 defaultevents["error"]  = ( client, err )->println( err )
 defaultevents["listen"] = ( saddr )      ->println("Listening on $saddr...")
@@ -92,11 +100,11 @@ HttpServer.event(server, "foo", "Julia")
 """
 struct HttpHandler
     handle::Function
-    sock::Base.TCPServer
+    sock::TCPServer
     events::Dict
 
-    HttpHandler(handle::Function, sock::Base.TCPServer) = new(handle, sock, defaultevents)
-    HttpHandler(handle::Function) = new(handle, Base.TCPServer(), defaultevents)
+    HttpHandler(handle::Function, sock::TCPServer) = new(handle, sock, defaultevents)
+    HttpHandler(handle::Function) = new(handle, TCPServer(), defaultevents)
 end
 handle(handler::HttpHandler, req::Request, res::Response) = handler.handle(req, res)
 

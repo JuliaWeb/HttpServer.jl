@@ -1,3 +1,5 @@
+*This project is deprecated. Please use [HTTP.jl](https://github.com/JuliaWeb/HTTP.jl)* 
+
 # HttpServer.jl
 
 [![Build Status](https://travis-ci.org/JuliaWeb/HttpServer.jl.svg?branch=master)](https://travis-ci.org/JuliaWeb/HttpServer.jl)
